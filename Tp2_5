@@ -1,0 +1,76 @@
+<?php
+
+require_once 'Tp2_3';
+
+class Lectura {
+    private $librosLeidos = [];
+
+    public function agregarLibroLeido($libro) {
+        $this->librosLeidos[] = $libro;
+    }
+
+    public function libroLeido($titulo) {
+        foreach ($this->librosLeidos as $libro) {
+            if ($libro->getTitulo() === $titulo) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function darSinopsis($titulo) {
+        foreach ($this->librosLeidos as $libro) {
+            if ($libro->getTitulo() === $titulo) {
+                return $libro->getSinopsis();
+            }
+        }
+        return "Sinopsis no disponible";
+    }
+
+    public function leidosAnioEdicion($anio) {
+        $libros = [];
+        foreach ($this->librosLeidos as $libro) {
+            if ($libro->getAnioEdicion() == $anio) {
+                $libros[] = $libro;
+            }
+        }
+        return $libros;
+    }
+
+    public function darLibrosPorAutor($nombreAutor) {
+        $libros = [];
+        foreach ($this->librosLeidos as $libro) {
+            if ($libro->getAutor() === $nombreAutor) {
+                $libros[] = $libro;
+            }
+        }
+        return $libros;
+    }
+}
+
+$lectura = new Lectura();
+
+$libro1 = new Libro("978-8437612682", "Cien años de soledad", 1967, "Debolsillo", "Gabriel García Márquez", 432, "Sinopsis del libro...");
+$libro2 = new Libro("978-0061120084", "To Kill a Mockingbird", 1960, "Harper Perennial Modern Classics", "Harper Lee", 336, "Sinopsis del libro...");
+$libro3 = new Libro("978-0142437209", "1984", 1949, "Penguin Books", "George Orwell", 328, "Sinopsis del libro...");
+
+$lectura->agregarLibroLeido($libro1);
+$lectura->agregarLibroLeido($libro2);
+$lectura->agregarLibroLeido($libro3);
+
+echo "¿Cien años de soledad ha sido leído?: " . ($lectura->libroLeido("Cien años de soledad") ? "Sí" : "No") . "\n";
+
+echo "Sinopsis de 1984: " . $lectura->darSinopsis("1984") . "\n";
+
+echo "Libros leídos en 1960:\n";
+$libros1960 = $lectura->leidosAnioEdicion(1960);
+foreach ($libros1960 as $libro) {
+    echo $libro . "\n";
+}
+
+echo "Libros leídos por Gabriel García Márquez:\n";
+$librosGarciaMarquez = $lectura->darLibrosPorAutor("Gabriel García Márquez");
+foreach ($librosGarciaMarquez as $libro) {
+    echo $libro . "\n";
+}
+?>

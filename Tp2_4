@@ -1,0 +1,55 @@
+<?php
+
+require_once 'Tp2_3';
+
+class Lectura {
+    private $libro;
+    private $paginaActual;
+
+    public function __construct($libro, $paginaActual) {
+        $this->libro = $libro;
+        $this->paginaActual = $paginaActual;
+    }
+
+    public function getLibro() {
+        return $this->libro;
+    }
+
+    public function getPaginaActual() {
+        return $this->paginaActual;
+    }
+
+    public function siguientePagina() {
+        $this->paginaActual++;
+        return $this->paginaActual;
+    }
+
+    public function retrocederPagina() {
+        if ($this->paginaActual > 1) {
+            $this->paginaActual--;
+        }
+        return $this->paginaActual;
+    }
+
+    public function irPagina($pagina) {
+        if ($pagina >= 1) {
+            $this->paginaActual = $pagina;
+        }
+        return $this->paginaActual;
+    }
+
+    public function __toString() {
+        return "Libro: {$this->libro}, Página Actual: {$this->paginaActual}";
+    }
+}
+
+$libro = new Libro("978-8437612682", "Cien años de soledad", 1967, "Debolsillo", "Gabriel García Márquez", 432, "Sinopsis del libro...");
+$lectura = new Lectura($libro, 1);
+
+echo "Información de la lectura:\n";
+echo $lectura . "\n";
+
+echo "Siguiente página: " . $lectura->siguientePagina() . "\n";
+echo "Retroceder página: " . $lectura->retrocederPagina() . "\n";
+echo "Ir a página 10: " . $lectura->irPagina(10) . "\n";
+?>

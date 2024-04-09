@@ -1,0 +1,165 @@
+<?php
+
+class Tramite {
+    private $tipo;
+    private $horarioCreacion;
+    private $horarioResolucion;
+
+    public function __construct($tipo, $horarioCreacion, $horarioResolucion) {
+        $this->tipo = $tipo;
+        $this->horarioCreacion = $horarioCreacion;
+        $this->horarioResolucion = $horarioResolucion;
+    }
+
+    public function getTipo() {
+        return $this->tipo;
+    }
+
+    public function __toString() {
+        return "Trámite: Tipo: {$this->tipo}, Horario de Creación: {$this->horarioCreacion}, Horario de Resolución: {$this->horarioResolucion}";
+    }
+}
+
+class Cola {
+    private $maxPersonas;
+    private $numPersonas;
+
+    public function __construct($maxPersonas, $numPersonas) {
+        $this->maxPersonas = $maxPersonas;
+        $this->numPersonas = $numPersonas;
+    }
+
+    public function getMaxPersonas() {
+        return $this->maxPersonas;
+    }
+
+    public function getNumPersonas() {
+        return $this->numPersonas;
+    }
+
+    public function incrementarNumPersonas() {
+        $this->numPersonas++;
+    }
+
+    public function __toString() {
+        return "Cola: Máximo de Personas: {$this->maxPersonas}, Número de Personas: {$this->numPersonas}";
+    }
+}
+
+class Mostrador {
+    private $tiposTramite;
+    private $cola;
+
+    public function __construct($tiposTramite, $cola) {
+        $this->tiposTramite = $tiposTramite;
+        $this->cola = $cola;
+    }
+
+    public function getTiposTramite() {
+        return $this->tiposTramite;
+    }
+
+    public function getCola() {
+        return $this->cola;
+    }
+
+    public function atiende($unTramite) {
+        return in_array($unTramite->getTipo(), $this->tiposTramite);
+    }
+
+    public function __toString() {
+        return "Mostrador: Tipos de Trámite: " . implode(", ", $this->tiposTramite) . ", Cola: " . $this->cola;
+    }
+}
+
+class Banco {
+    private $mostradores = [];
+
+    public function __construct($mostradores) {
+        $this->mostradores = $mostradores;
+    }
+
+    public function mostradoresQueAtienden($unTramite) {
+        $mostradoresAtienden = [];
+        foreach ($this->mostradores as $mostrador) {
+            if ($mostrador->atiende($unTramite)) {
+                $mostradoresAtienden[] = $mostrador;
+            }
+        }
+        return $mostradoresAtienden;
+    }
+
+    public function mejorMostradorPara($unTramite) {
+        $mejorMostrador = null;
+        $minPersonasEsperando = PHP_INT_MAX;
+
+        foreach ($this->mostradores as $mostrador) {
+            if ($mostrador->atiende($unTramite) && $mostrador->getCola()->getNumPersonas() < $mostrador->getCola()->getMaxPersonas()) {
+                $numPersonasEsperando = $mostrador->getCola()->getNumPersonas();
+                if ($numPersonasEsperando < $minPersonasEsperando) {
+                    $minPersonasEsperando = $numPersonasEsperando;
+                    $mejorMostrador = $mostrador;
+                }
+            }
+        }
+
+        return $mejorMostrador;
+    }
+
+    public function atender($unCliente) {
+        $tramiteCliente = $unCliente->getTramite();
+        $mostrador = $this->mejorMostradorPara($tramiteCliente);
+
+        if ($mostrador != null) {
+            $mostrador->getCola()->incrementarNumPersonas();
+            return $mostrador;
+        } else {
+            return "Será atendido en cuanto haya lugar en un mostrador";
+        }
+    }
+
+    public function __toString() {
+        $mostradoresInfo = "";
+        foreach ($this->mostradores as $mostrador) {
+            $mostradoresInfo .= $mostrador . "\n";
+        }
+        return $mostradoresInfo;
+    }
+}
+
+class Cliente {
+    private $tramite;
+
+    public function __construct($tramite) {
+        $this->tramite = $tramite;
+    }
+
+    public function getTramite() {
+        return $this->tramite;
+    }
+}
+
+//test script
+$cola1 = new Cola(5, 3);
+$cola2 = new Cola(10, 7);
+
+$mostrador1 = new Mostrador(["Depósito", "Retiro"], $cola1);
+$mostrador2 = new Mostrador(["Consulta", "Retiro"], $cola2);
+
+$banco = new Banco([$mostrador1, $mostrador2]);
+
+$tramiteCliente = new Tramite("Retiro", "08:00", "08:30");
+$cliente = new Cliente($tramiteCliente);
+
+echo "Mostradores que atienden el trámite 'Retiro':\n";
+$mostradoresAtienden = $banco->mostradoresQueAtienden($tramiteCliente);
+foreach ($mostradoresAtienden as $mostrador) {
+    echo $mostrador . "\n";
+}
+
+echo "\nMejor mostrador para el trámite 'Retiro':\n";
+echo $banco->mejorMostradorPara($tramiteCliente) . "\n";
+
+echo "\nIntentando atender al cliente con el trámite 'Retiro':\n";
+echo $banco->atender($cliente) . "\n";
+

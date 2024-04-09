@@ -1,0 +1,82 @@
+<?php
+
+require_once 'Tp2_1_a';
+
+class CuentaBancaria {
+
+    private $numeroCuenta;
+    private $cliente; 
+    private $saldoActual;
+    private $interesAnual;
+
+    public function __construct($numeroCuenta, $cliente, $saldoActual, $interesAnual) {
+        $this->numeroCuenta = $numeroCuenta;
+        $this->cliente = $cliente;
+        $this->saldoActual = $saldoActual;
+        $this->interesAnual = $interesAnual;
+    }
+
+    public function getNumeroCuenta() {
+        return $this->numeroCuenta;
+    }
+
+    public function getCliente() {
+        return $this->cliente;
+    }
+
+    public function getSaldoActual() {
+        return $this->saldoActual;
+    }
+
+    public function getInteresAnual() {
+        return $this->interesAnual;
+    }
+
+    public function actualizarSaldo() {
+        $interesDiario = $this->interesAnual / 365;
+        $this->saldoActual += $this->saldoActual * $interesDiario;
+    }
+
+    public function depositar($cantidad) {
+        $this->saldoActual += $cantidad;
+    }
+
+    public function retirar($cantidad) {
+        if ($this->saldoActual >= $cantidad) {
+            $this->saldoActual -= $cantidad;
+            return true;
+        } else {
+            return false; 
+        }
+    }
+
+    public function __toString() {
+        return "Número de Cuenta: {$this->numeroCuenta}, Cliente: {$this->cliente}, Saldo Actual: {$this->saldoActual}, Interés Anual: {$this->interesAnual}%";
+    }
+}
+
+// Crear una instancia de Persona para utilizarla en la cuenta bancaria
+$cliente = new Persona("Juan", "Perez", "DNI", "12345678");
+
+// Crear una instancia de CuentaBancaria utilizando la instancia de Persona como cliente
+$cuenta = new CuentaBancaria("123456789", $cliente, 1000, 3);
+
+echo "Información de la cuenta bancaria:\n";
+echo $cuenta . "\n";
+
+$cuenta->actualizarSaldo();
+echo "Saldo actualizado después de aplicar el interés diario: {$cuenta->getSaldoActual()}\n";
+
+$cuenta->depositar(500);
+echo "Después de depositar 500$, el saldo es: {$cuenta->getSaldoActual()}\n";
+
+$cuenta->retirar(200);
+echo "Después de retirar 200$, el saldo es: {$cuenta->getSaldoActual()}\n";
+
+$cuenta->retirar(2000);
+echo "Intento de retirar 2000$...\n";
+if ($cuenta->retirar(2000)) {
+    echo "Retiro exitoso, saldo actual: {$cuenta->getSaldoActual()}\n";
+} else {
+    echo "No hay suficiente saldo para retirar 2000$.\n";
+}

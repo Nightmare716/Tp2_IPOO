@@ -1,0 +1,67 @@
+<?php
+
+require_once 'Tp2_1_a';
+
+class Libro {
+    private $ISBN;
+    private $titulo;
+    private $anioEdicion;
+    private $editorial;
+    private $autor;
+    private $cantidadPaginas;
+    private $sinopsis;
+
+    public function __construct($ISBN, $titulo, $anioEdicion, $editorial, $autor, $cantidadPaginas, $sinopsis) {
+        $this->ISBN = $ISBN;
+        $this->titulo = $titulo;
+        $this->anioEdicion = $anioEdicion;
+        $this->editorial = $editorial;
+        $this->autor = $autor;
+        $this->cantidadPaginas = $cantidadPaginas;
+        $this->sinopsis = $sinopsis;
+    }
+
+    public function getISBN() {
+        return $this->ISBN;
+    }
+
+    public function getTitulo() {
+        return $this->titulo;
+    }
+
+    public function getAnioEdicion() {
+        return $this->anioEdicion;
+    }
+
+    public function getEditorial() {
+        return $this->editorial;
+    }
+
+    public function getAutor() {
+        return $this->autor;
+    }
+
+    public function getCantidadPaginas() {
+        return $this->cantidadPaginas;
+    }
+
+    public function getSinopsis() {
+        return $this->sinopsis;
+    }
+
+    public function __toString() {
+        return "ISBN: {$this->ISBN}, Título: {$this->titulo}, Año de Edición: {$this->anioEdicion}, Editorial: {$this->editorial}, Autor: {$this->autor}, Cantidad de Páginas: {$this->cantidadPaginas}, Sinopsis: {$this->sinopsis}";
+    }
+}
+
+$autor = new Persona("Juan", "Perez", "DNI", "12345678");
+
+$libro = new Libro("978-8437612682", "Cien años de soledad", 1967, "Debolsillo", $autor, 432, "Sinopsis del libro ---");
+
+echo "Información del libro:\n";
+echo $libro . "\n";
+
+echo "Autor del libro: " . $libro->getAutor() . "\n";
+echo "Cantidad de páginas: " . $libro->getCantidadPaginas() . "\n";
+echo "Sinopsis: " . $libro->getSinopsis() . "\n";
+?>

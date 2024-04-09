@@ -1,0 +1,143 @@
+<?php
+
+class Funcion {
+    // Atributos
+    private $nombre;
+    private $inicio;
+    private $duracion;
+    private $precio;
+
+    // Constructor
+    public function __construct($nombre, $inicio, $duracion, $precio) {
+        $this->nombre = $nombre;
+        $this->inicio = $inicio;
+        $this->duracion = $duracion;
+        $this->precio = $precio;
+    }
+
+    // Métodos de acceso
+    public function getNombre() {
+        return $this->nombre;
+    }
+
+    public function setNombre($nombre) {
+        $this->nombre = $nombre;
+    }
+
+    public function getInicio() {
+        return $this->inicio;
+    }
+
+    public function setInicio($inicio) {
+        $this->inicio = $inicio;
+    }
+
+    public function getDuracion() {
+        return $this->duracion;
+    }
+
+    public function setDuracion($duracion) {
+        $this->duracion = $duracion;
+    }
+
+    public function getPrecio() {
+        return $this->precio;
+    }
+
+    public function setPrecio($precio) {
+        $this->precio = $precio;
+    }
+}
+
+class Teatro {
+    // Atributos
+    private $nombre;
+    private $direccion;
+    private $funciones;
+
+    // Constructor
+    public function __construct($nombre, $direccion) {
+        $this->nombre = $nombre;
+        $this->direccion = $direccion;
+        $this->funciones = array();
+    }
+
+    // Métodos de acceso
+    public function getNombre() {
+        return $this->nombre;
+    }
+
+    public function setNombre($nombre) {
+        $this->nombre = $nombre;
+    }
+
+    public function getDireccion() {
+        return $this->direccion;
+    }
+
+    public function setDireccion($direccion) {
+        $this->direccion = $direccion;
+    }
+
+    public function getFunciones() {
+        return $this->funciones;
+    }
+
+    // Método para agregar una función al teatro
+    public function agregarFuncion($funcion) {
+        // Verificar que no haya solapamiento de horarios
+        foreach ($this->funciones as $f) {
+            if ($funcion->getInicio() >= $f->getInicio() && $funcion->getInicio() < $f->getInicio() + $f->getDuracion()) {
+                echo "Error: La función '{$funcion->getNombre()}' se solapa con otra función existente.\n";
+                return;
+            }
+        }
+        // Si no hay solapamiento, agregar la función
+        $this->funciones[] = $funcion;
+    }
+
+    // Método para modificar el nombre de una función
+    public function cambiarNombreFuncion($indice, $nuevoNombre) {
+        if (array_key_exists($indice, $this->funciones)) {
+            $this->funciones[$indice]->setNombre($nuevoNombre);
+        }
+    }
+
+    // Método para modificar el precio de una función
+    public function cambiarPrecioFuncion($indice, $nuevoPrecio) {
+        if (array_key_exists($indice, $this->funciones)) {
+            $this->funciones[$indice]->setPrecio($nuevoPrecio);
+        }
+    }
+
+    // Método para cargar funciones en el teatro
+    public function cargarFunciones() {
+        // Solicitar información de las funciones por consola
+        // Aquí puedes implementar la lógica para solicitar los datos por consola y agregar las funciones al teatro
+        // Por ejemplo:
+        $nombreFuncion = readline("Ingrese el nombre de la función: ");
+        $horaInicio = readline("Ingrese la hora de inicio de la función: ");
+        $duracion = readline("Ingrese la duración de la función en minutos: ");
+        $precio = readline("Ingrese el precio de la función: ");
+        $funcion = new Funcion($nombreFuncion, $horaInicio, $duracion, $precio);
+        $this->agregarFuncion($funcion);
+    }
+
+    // Método para representar Teatro como una cadena de texto
+    public function __toString() {
+        $str = "Nombre del Teatro: {$this->nombre}\n";
+        $str .= "Dirección: {$this->direccion}\n";
+        $str .= "Funciones:\n";
+        foreach ($this->funciones as $indice => $funcion) {
+            $str .= "  Función " . ($indice + 1) . ": Nombre: {$funcion->getNombre()}, Inicio: {$funcion->getInicio()}, Duración: {$funcion->getDuracion()} minutos, Precio: {$funcion->getPrecio()}$\n";
+        }
+        return $str;
+    }
+}
+
+// Ejemplo de uso
+$teatro = new Teatro("Teatro ABC", "Calle Principal 123");
+$teatro->cargarFunciones();
+echo $teatro;
+
+?>

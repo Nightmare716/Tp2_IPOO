@@ -1,0 +1,94 @@
+<?php
+
+require_once 'Tp2_1_a';
+
+class Disquera {
+
+    private $hora_desde;
+    private $hora_hasta;
+    private $estado;
+    private $direccion;
+    private $dueno;
+
+    public function __construct($hora_desde, $hora_hasta, $estado, $direccion, $dueno) {
+        $this->hora_desde = $hora_desde;
+        $this->hora_hasta = $hora_hasta;
+        $this->estado = $estado;
+        $this->direccion = $direccion;
+        $this->dueno = $dueno;
+    }
+
+    public function getHoraDesde() {
+        return $this->hora_desde;
+    }
+
+    public function getHoraHasta() {
+        return $this->hora_hasta;
+    }
+
+    public function getEstado() {
+        return $this->estado;
+    }
+
+    public function getDireccion() {
+        return $this->direccion;
+    }
+
+    public function getDueno() {
+        return $this->dueno;
+    }
+
+    public function dentroHorarioAtencion($hora, $minutos) {
+        if ($hora > $this->hora_desde || ($hora == $this->hora_desde && $minutos >= 0)) {
+            if ($hora < $this->hora_hasta || ($hora == $this->hora_hasta && $minutos <= 0)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function abrirDisquera($hora, $minutos) {
+        if ($this->estado == 'cerrada' && $this->dentroHorarioAtencion($hora, $minutos)) {
+            $this->estado = 'abierta';
+            return true;
+        }
+        return false;
+    }
+
+    public function cerrarDisquera($hora, $minutos) {
+        if ($this->estado == 'abierta' && !$this->dentroHorarioAtencion($hora, $minutos)) {
+            $this->estado = 'cerrada';
+            return true;
+        }
+        return false;
+    }
+
+    public function __toString() {
+        return "Hora de apertura: {$this->hora_desde}, Hora de cierre: {$this->hora_hasta}, Estado: {$this->estado}, Dirección: {$this->direccion}, Dueño: {$this->dueno}";
+    }
+}
+
+$dueno = new Persona("Juan", "Perez", "DNI", "12345678");
+$disquera = new Disquera(9, 18, 'cerrada', 'Calle Principal 123', $dueno);
+
+echo "Información de la disquera:\n";
+echo $disquera . "\n";
+
+echo "¿La tienda debe estar abierta a las 10:00? ";
+echo $disquera->dentroHorarioAtencion(10, 0) ? "Sí\n" : "No\n";
+
+echo "Intentando abrir la disquera a las 10:00...\n";
+if ($disquera->abrirDisquera(10, 0)) {
+    echo "Disquera abierta\n";
+} else {
+    echo "No se pudo abrir la disquera\n";
+}
+
+echo "Intentando cerrar la disquera a las 20:00...\n";
+if ($disquera->cerrarDisquera(20, 0)) {
+    echo "Disquera cerrada\n";
+} else {
+    echo "No se pudo cerrar la disquera\n";
+}
+
+?>

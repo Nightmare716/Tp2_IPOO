@@ -1,0 +1,118 @@
+<?php
+
+// Definición de las clases
+
+class Persona {
+    // Atributos de Persona
+    private $nombre;
+    private $apellido;
+    private $tipoDocumento;
+    private $numeroDocumento;
+
+    // Constructor de Persona
+    public function __construct($nombre, $apellido, $tipoDocumento, $numeroDocumento) {
+        $this->nombre = $nombre;
+        $this->apellido = $apellido;
+        $this->tipoDocumento = $tipoDocumento;
+        $this->numeroDocumento = $numeroDocumento;
+    }
+
+    // Método para representar Persona como una cadena de texto
+    public function __toString() {
+        return "Nombre: {$this->nombre}, Apellido: {$this->apellido}, Tipo de Documento: {$this->tipoDocumento}, Número de Documento: {$this->numeroDocumento}";
+    }
+}
+
+class Tramite {
+    // Atributos de Tramite
+    private $cliente;
+    private $fechaIngreso;
+    private $fechaCierre;
+    private $horarioIngreso;
+    private $horarioCierre;
+
+    // Constructor de Tramite
+    public function __construct($cliente, $fechaIngreso, $fechaCierre, $horarioIngreso, $horarioCierre) {
+        $this->cliente = $cliente;
+        $this->fechaIngreso = $fechaIngreso;
+        $this->fechaCierre = $fechaCierre;
+        $this->horarioIngreso = $horarioIngreso;
+        $this->horarioCierre = $horarioCierre;
+    }
+}
+
+class ColaTramites {
+    // Atributos de ColaTramites
+    private $limite;
+    private $cantidadActual;
+
+    // Constructor de ColaTramites
+    public function __construct($limite, $cantidadActual) {
+        $this->limite = $limite;
+        $this->cantidadActual = $cantidadActual;
+    }
+
+    // Método para representar ColaTramites como una cadena de texto
+    public function __toString() {
+        return "Límite: {$this->limite}, Cantidad Actual: {$this->cantidadActual}";
+    }
+}
+
+class Mostrador {
+    // Atributos de Mostrador
+    private $tramitesAtendidos;
+    private $colaTramites;
+
+    // Constructor de Mostrador
+    public function __construct($tramitesAtendidos, $colaTramites) {
+        $this->tramitesAtendidos = $tramitesAtendidos;
+        $this->colaTramites = $colaTramites;
+    }
+
+    // Getter para los tramitesAtendidos
+    public function getTramitesAtendidos() {
+        return $this->tramitesAtendidos;
+    }
+
+    // Getter para la colaTramites
+    public function getColaTramites() {
+        return $this->colaTramites;
+    }
+}
+
+class Banco {
+    // Atributos de Banco
+    private $mostradores;
+
+    // Constructor de Banco
+    public function __construct($mostradores) {
+        $this->mostradores = $mostradores;
+    }
+
+    // Método para representar Banco como una cadena de texto
+    public function __toString() {
+        $str = "Banco:\n";
+        foreach ($this->mostradores as $index => $mostrador) {
+            $str .= "Mostrador $index:\n";
+            $str .= "Tramites Atendidos: " . implode(", ", $mostrador->getTramitesAtendidos()) . "\n";
+            $str .= "Cola de Tramites: " . $mostrador->getColaTramites() . "\n";
+        }
+        return $str;
+    }
+}
+
+// Crear instancias de las clases
+$cliente1 = new Persona("Juan", "Perez", "DNI", "12345678");
+$cliente2 = new Persona("Maria", "Gomez", "DNI", "98765432");
+$tramite1 = new Tramite($cliente1, "2024-04-09", "2024-04-10", "10:00", "11:00");
+$tramite2 = new Tramite($cliente2, "2024-04-10", "2024-04-11", "11:00", "12:00");
+$colaTramites1 = new ColaTramites(10, 5);
+$colaTramites2 = new ColaTramites(8, 3);
+$mostrador1 = new Mostrador(["Pago de facturas", "Consultas"], $colaTramites1);
+$mostrador2 = new Mostrador(["Depósitos", "Retiros"], $colaTramites2);
+$banco = new Banco([$mostrador1, $mostrador2]);
+
+// Mostrar información del banco
+echo $banco;
+
+?>
